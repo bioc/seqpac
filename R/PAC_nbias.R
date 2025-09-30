@@ -8,14 +8,14 @@
 #'
 #' @family PAC analysis
 #'
-#' @seealso \url{https://github.com/Danis102} for updates on the current
+#' @seealso \url{https://github.com/OestLab/seqpac} for updates on the current
 #'   package.
 #'
 #' @param PAC PAC-list object containing an Anno data.frame with sequences as
 #'   row names and a count table with raw counts.
-#' @param position Integer indicating the nucleotide postion from 3' to 5'
+#' @param position Integer indicating the nucleotide position from 3' to 5'
 #'   position (default=1).
-#' @param range Integer vector indicating the sequence size range
+#' @param nucleotide_range Integer vector indicating the sequence size range
 #'   (default=c(min, max)).
 #'
 #' @param norm Character indicating what type of data to be used. If
@@ -38,7 +38,7 @@
 #' 
 #' @param summary_target List with: 
 #'                          1st object being character vector of target object
-#'                          in sumary(PAC), 2nd object being a character vector
+#'                          in summary(PAC), 2nd object being a character vector
 #'                          of the target column(s) in the target summary object
 #'                          (1st object). (default=NULL)
 #'
@@ -49,7 +49,7 @@
 #'   each plot individually (different y-axes).
 #'   
 #' @param data_only logical. If data_only=TRUE a data.frame a simple Anno object
-#'   is returned with a Size and a Nuclotide bias column. As default,
+#'   is returned with a Size and a Nucleotide bias column. As default,
 #'   data_only=FALSE then graphs are returned in addition to data.
 #'   
 #' @return A list of objects: 
@@ -86,7 +86,7 @@
 #' @export
 
 
-PAC_nbias <- function(PAC, position=1, norm=NULL, range=NULL, anno_target=NULL, 
+PAC_nbias <- function(PAC, position=1, norm=NULL, nucleotide_range=NULL, anno_target=NULL, 
                       pheno_target=NULL, summary_target=NULL, colors=NULL,
                       ymax=NULL, data_only=FALSE){
   
@@ -111,11 +111,11 @@ PAC_nbias <- function(PAC, position=1, norm=NULL, range=NULL, anno_target=NULL,
       anno_target[[2]] <- as.character(unique(PAC$Anno[,anno_target[[1]]]))
      }
     }
-  if(is.null(range)){
-    range <- c(min(PAC$Anno$Size), max(PAC$Anno$Size))
+  if(is.null(nucleotide_range)){
+    nucleotide_range <- c(min(PAC$Anno$Size), max(PAC$Anno$Size))
     }
   
-  PAC <- seqpac::PAC_filter(PAC, size=range, pheno_target=pheno_target, 
+  PAC <- seqpac::PAC_filter(PAC, nucleotide_range=nucleotide_range, pheno_target=pheno_target, 
                             anno_target=anno_target, subset_only=TRUE)
   stopifnot(PAC_check(PAC))
   
@@ -147,11 +147,11 @@ PAC_nbias <- function(PAC, position=1, norm=NULL, range=NULL, anno_target=NULL,
     return(anno[,c(colmn2, colmn1),drop=FALSE])
   }else{
    cat(paste0("\nCounting nucleotides"))
-   combin <- c(paste0(range[1]:range[2], "_A"),
-               paste0(range[1]:range[2], "_T"),
-               paste0(range[1]:range[2], "_C"),
-               paste0(range[1]:range[2], "_G"),
-               paste0(range[1]:range[2], "_N"))
+   combin <- c(paste0(nucleotide_range[1]:nucleotide_range[2], "_A"),
+               paste0(nucleotide_range[1]:nucleotide_range[2], "_T"),
+               paste0(nucleotide_range[1]:nucleotide_range[2], "_C"),
+               paste0(nucleotide_range[1]:nucleotide_range[2], "_G"),
+               paste0(nucleotide_range[1]:nucleotide_range[2], "_N"))
    nuc_lst <- lapply(as.list(dat), function(x){
      nuc_agg <- stats::aggregate(x, list(factor(paste(anno$Size, 
                                                anno$nuc_bias, sep="_"))), sum)

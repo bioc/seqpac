@@ -17,7 +17,7 @@ make_trim(
   adapt_3 = "AGATCGGAAGAGCACACGTCTGAACTCCAGTCACTA",
   adapt_5_set = c(type = NULL, min = NULL, mismatch = NULL),
   adapt_5 = NULL,
-  seq_range = c(min = NULL, max = NULL),
+  nucleotide_range = c(min = NULL, max = NULL),
   quality = c(threshold = 20, percent = 0.8)
 )
 }
@@ -32,10 +32,10 @@ compressed trimmed fastq files should be saved (as basename trim.fastq.gz).}
 read and adaptor sequences. Note that indel trimming will only be done on
 fragments that have failed to be trimmed by other means. Default=TRUE.}
 
-\item{concat}{Integer setting the threshold for trimming concatamere-like
+\item{concat}{Integer setting the threshold for trimming concatemer-like
 adaptors. Even when adaptor synthesis and ligation are strictly controlled,
-concatamer-like ("di-") adaptor sequences are formed. When \code{concat} is
-an integer, \code{make_trim} will search all trimmed sequnces for
+concatemer-like ("di-") adaptor sequences are formed. When \code{concat} is
+an integer, \code{make_trim} will search all trimmed sequences for
 additional adaptor sequence using a shorter version of the provided adaptor
 in \code{adapt_3}. The length of the short adaptor is controlled by
 \code{adapt_3_set$min}. If an additional, shorter, adaptor sequence is
@@ -48,7 +48,7 @@ trimming will result in NNNNN. Note that setting \code{concat} too low will
 result in trimming of real nucleotides that just happend to share sequence
 with the adaptor. As default \code{concat}=12, which have been carefully
 evaluated in relation to the risk of trimming real sequence. If
-\code{concat}=NULL, concatamer-like adaptor trimming will not be done.}
+\code{concat}=NULL, concatemer-like adaptor trimming will not be done.}
 
 \item{check_mem}{Logical whether a memory check should be performed. A memory
 check estimates the approximate memory usage given the fastq file sizes and
@@ -79,7 +79,7 @@ threads if you encounter memory problems.}
   'mismatch' that controls poly G trimming. This trimming might be necessary
   for fastq files from two channel illumina sequencers (e.g. NextSeq and
   NovaSeq) where no color signals are interpreted as 'G', but where read
-  failure sometimes also results in long stratches of 'no-signal-Gs'.
+  failure sometimes also results in long stretches of 'no-signal-Gs'.
 
   Works similar to \code{adapt_3_set} but instead of an adaptor sequence a
   poly 'G' string is constructed from the 'min' input option. Thus, if
@@ -93,7 +93,7 @@ adapt_3_set=c(type="hard_rm", min=10, mismatch=0.1).
  
  Options for each input are: \describe{
   \item{\strong{type}=}{
-      '\emph{hard_trim}': Trims all upto the very last nucleotide.\cr
+      '\emph{hard_trim}': Trims all up to the very last nucleotide.\cr
       '\emph{hard_rm}': Same as 'hard_trim' but removes untrimmed 
       sequences.\cr
       '\emph{hard_save}': Same as 'hard_trim' but saves all untrimmed 
@@ -117,7 +117,7 @@ adapt_3_set=c(type="hard_rm", min=10, mismatch=0.1).
       }
       
   \item{\strong{mismatch}=}{
-      Numeric controling the percent mismatch. 
+      Numeric controlling the percent mismatch. 
       For instance, if min=10 and
       mismatch=0.1, then 1 mismatch is allowed in the minimum overlap.
       }
@@ -135,11 +135,11 @@ sequence is provided in \code{adapt_5}.}
 sequences are only trimmed in specialized protocols or in very short
 paired-end sequencing.}
 
-\item{seq_range}{Numeric vector with two inputs named 'min' and 'max', that
+\item{nucleotide_range}{Numeric vector with two inputs named 'min' and 'max', that
 controls the sequence size filter. For example, if
-\code{seq_range=c(min=15, max=50)} the function will extract sequences in
-the range between 15-50 nucleotides after trimming. As defualt,
-\code{seq_range=c(min=NULL, max=NULL)} and will retain all trimmed
+\code{nucleotide_range=c(min=15, max=50)} the function will extract sequences in
+the range between 15-50 nucleotides after trimming. As default,
+\code{nucleotide_range=c(min=NULL, max=NULL)} and will retain all trimmed
 sequences.}
 
 \item{quality}{Numeric vector with two inputs named 'threshold' and 'percent'
@@ -195,7 +195,7 @@ prog_report  <-  make_trim(
        adapt_3_set=c(type="hard_rm", min=10, mismatch=0.1), 
        adapt_3="AGATCGGAAGAGCACACGTCTGAACTCCAGTCACTA", 
        polyG=c(type="hard_trim", min=20, mismatch=0.1),
-       seq_range=c(min=14, max=70),
+       nucleotide_range=c(min=14, max=70),
        quality=c(threshold=20, percent=0.8))
        
 list.files(path = output, pattern = "fastq") #after
@@ -215,14 +215,15 @@ prog_report
 #      adapt_3_set=<options_for_main_trimming, 
 #      adapt_3=<sequence_to be trimmed, 
 #      polyG=<Illumina_Nextseq_type_poly_G_trimming>,
-#      seq_range=<what_sequence_range_to_save>,
+#      nucleotide_range=<what_sequence_range_to_save>,
 #      quality=<quality_filtering_options>))
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current package.
+\url{https://github.com/OestLab/seqpac} for updates on the current package.
 
 Other PAC generation: 
 \code{\link{PAC_check}()},
+\code{\link{PAC_create}()},
 \code{\link{make_PAC}()},
 \code{\link{make_counts}()},
 \code{\link{make_cutadapt}()},

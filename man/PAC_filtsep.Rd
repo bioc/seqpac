@@ -2,7 +2,7 @@
 % Please edit documentation in R/PAC_filtsep.R
 \name{PAC_filtsep}
 \alias{PAC_filtsep}
-\title{Generates filtered sequence name list seperated on group}
+\title{Generates filtered sequence name list separated on group}
 \usage{
 PAC_filtsep(
   PAC,
@@ -47,10 +47,10 @@ converted into a binary (hit=1, no hit=0) data.frame. See
 A data.frame (see output for details).
 }
 \description{
-\code{PAC_filtsep} Group seperated filtered name list
+\code{PAC_filtsep} Group separated filtered name list
 }
 \details{
-Given a PAC object the function will extract sequences within the reach a
+Given a PAC object the function will extract sequences within the
 given filter within a given group.
 }
 \examples{
@@ -91,7 +91,7 @@ load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata",
  
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current
+\url{https://github.com/OestLab/seqpac} for updates on the current
   package.
 
 Other PAC analysis: 

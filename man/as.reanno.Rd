@@ -57,7 +57,7 @@ closeAllConnections()
 suppressWarnings(file.remove(paste(output, out_fls, sep="/")))
 
 ##  Then map your PAC-object against the fasta references
- map_reanno(pac, ref_paths=ref_paths, output_path=output,
+ map_reanno(pac, input=ref_paths, output=output,
                type="internal", mismatches=0,  import="biotype", 
                threads=2, keep_temp=FALSE, override=TRUE)
 
@@ -91,10 +91,11 @@ isS4(reanno_s4)
  
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current
+\url{https://github.com/OestLab/seqpac} for updates on the current
   package.
 
 Other PAC reannotation: 
+\code{\link{PAC_annotate}()},
 \code{\link{add_reanno}()},
 \code{\link{import_reanno}()},
 \code{\link{make_conv}()},

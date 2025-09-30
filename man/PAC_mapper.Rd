@@ -6,7 +6,7 @@
 \usage{
 PAC_mapper(
   PAC,
-  ref,
+  input,
   mismatches = 0,
   multi = "remove",
   threads = 1,
@@ -19,11 +19,12 @@ PAC_mapper(
 \arguments{
 \item{PAC}{PAC-list object.}
 
-\item{ref}{Character indicating the path to the fasta (.fa) reference file or
+\item{input}{Character indicating the path to the fasta (.fa) reference file or
 a DNAStringSet with already loaded reference sequences. If a Bowtie index
-is missing for the reference, PAC_mapper will attempt to temporally
-generate such index automatically. Thus, large large references are
-discouraged. Please use the original reanno workflow for large references.}
+is missing for the reference, PAC_mapper will attempt to temporarily
+generate such index automatically. Thus, large references are
+discouraged. Instead, we suggest you use the original reanno workflow 
+for large references.}
 
 \item{mismatches}{Integer indicating the number of mismatches that should be
 allowed in the mapping.}
@@ -54,8 +55,8 @@ reference do not contain pre-processed tRNA. Setting N_down="NNN" or "CCA"
 (in many species CCA is added to mature tRNA) will allow mapping against
 the mature tRNA. No nucleotides are added by default.}
 
-\item{report_string}{Logical whether an alignment string that shows in
-character where sequences align against the reference. Works well with
+\item{report_string}{Logical whether an alignment string that shows where 
+sequences align against the reference in a character format. Works well with
 tRNA, but makes the Alignments object difficult to work with when longer
 references are used (default=FALSE).}
 
@@ -104,11 +105,11 @@ ref_rRNA <- system.file("extdata/rrna", "rRNA.fa",
 
 ## Map using PAC-mapper
 map_rRNA <- PAC_mapper(pac_rRNA, mismatches=0, 
-                        threads=1, ref=ref_rRNA, override=TRUE)
+                        threads=1, input=ref_rRNA, override=TRUE)
 
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current
+\url{https://github.com/OestLab/seqpac} for updates on the current
   package.
 
 Other PAC analysis: 

@@ -232,7 +232,7 @@ as.PAC <- function(from){
 #' suppressWarnings(file.remove(paste(output, out_fls, sep="/")))
 #'
 #' ##  Then map your PAC-object against the fasta references
-#'  map_reanno(pac, ref_paths=ref_paths, output_path=output,
+#'  map_reanno(pac, input=ref_paths, output=output,
 #'                type="internal", mismatches=0,  import="biotype", 
 #'                threads=2, keep_temp=FALSE, override=TRUE)
 #' 
@@ -342,7 +342,7 @@ setAs("reanno", "list",
 #' 
 #' @family PAC reannotation
 #'
-#' @seealso \url{https://github.com/Danis102} for updates on the current
+#' @seealso \url{https://github.com/OestLab/seqpac} for updates on the current
 #'   package.
 #'
 #' @param from S3 reanno object.
@@ -383,7 +383,7 @@ setAs("reanno", "list",
 #' suppressWarnings(file.remove(paste(output, out_fls, sep="/")))
 #'
 #' ##  Then map your PAC-object against the fasta references
-#'  map_reanno(pac, ref_paths=ref_paths, output_path=output,
+#'  map_reanno(pac, input=ref_paths, output=output,
 #'                type="internal", mismatches=0,  import="biotype", 
 #'                threads=2, keep_temp=FALSE, override=TRUE)
 #' 

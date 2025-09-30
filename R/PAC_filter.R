@@ -1,4 +1,4 @@
-#' Filter a PAC object on sequence size and covarage  
+#' Filter a PAC object on sequence size and coverage  
 #'
 #' \code{PAC_filter} Filter PAC objects.
 #'
@@ -7,13 +7,13 @@
 #' 
 #' @family PAC analysis
 #'
-#' @seealso \url{https://github.com/Danis102} for updates on the current
+#' @seealso \url{https://github.com/OestLab/seqpac} for updates on the current
 #'   package.
 #'
 #' @param PAC PAC-list object containing an Anno data.frame with sequences as
-#'   row names and a Counts table with raw counts or reads per million (cpm).
+#'   row names and a Counts table with raw counts or counts per million (cpm).
 #'   
-#' @param size Integer vector giving the size interval, as c(min,max), that
+#' @param nucleotide_range Integer vector giving the size interval, as c(min,max), that
 #'   should be saved (default=c(min,max)).
 #'   
 #' @param threshold Integer giving the threshold in counts or normalized counts
@@ -26,7 +26,7 @@
 #'   "cpm" or another normalized data table in PAC$norm (default="counts").
 #' 
 #' @param stat (optional) Logical specifying if a coverage graph should be
-#'   generated and if users should be promted prior to proceeding.
+#'   generated and if users should be prompted prior to proceeding.
 #'   (default=FALSE).
 #'
 #' @param subset_only Logical whether only subsetting using pheno_target and/or
@@ -44,10 +44,16 @@
 #'          object being a character vector of the target type/biotypes(s) in
 #'          the target Anno column (1st object).
 #'          (default=NULL) 
+#'          
+#' @param allbut (optional) TRUE or FALSE to give option to include
+#'          all possible variables but the ones defined in pheno_target
+#'          and anno_target. Useful when you wish to for example filter out
+#'          one particular variable.
 #'
 #' @return A list of objects: 
 #'               PAC object with filtered data.   
-#'               (optional) A covarage plot 
+#'               (optional) A coverage plot 
+#'               
 #' @examples
 #' load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
 #'                  package = "seqpac", mustWork = TRUE))
@@ -55,7 +61,7 @@
 #'###--------------------------------------------------------------------- 
 #'## Extracts all sequences between 10-80 nt in length with at 
 #'## least 5 counts in 20% of all samples.
-#'pac_lowfilt <- PAC_filter(pac, size=c(10,80), threshold=5,
+#'pac_lowfilt <- PAC_filter(pac, nucleotide_range=c(10,80), threshold=5,
 #'                          coverage=20, norm = "counts",
 #'                          pheno_target=NULL, anno_target=NULL)
 #'
@@ -72,14 +78,20 @@
 #'
 #'pac_filt <- PAC_filter(pac, subset_only = TRUE,
 #'                      anno_target= unique(do.call("c", as.list(filtsep))))
+#'                      
+#'###--------------------------------------------------------------------- 
+#'## Extract all biotypes but tRNA in all samples but in sample fastq_1
+#'
+#'pac_filt <- PAC_filter(pac, anno_target=list("Biotypes_mis0","tRNA"),
+#'                      pheno_target=list("sample","fastq1"), allbut=TRUE)
 #' 
 #' 
 #' 
 #' @export
 
-PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0, 
+PAC_filter <- function(PAC, nucleotide_range=NULL, threshold=0, coverage=0, 
                        norm="counts", subset_only=FALSE, stat=FALSE, 
-                       pheno_target=NULL, anno_target=NULL){
+                       pheno_target=NULL, anno_target=NULL, allbut=FALSE){
   
 
   ## Check S4
@@ -90,13 +102,23 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
     tp <- "S3"
   }
   
-  opt_sci <- options()
   options(scipen=999)
   
   
   strt <- nrow(PAC$Counts)
   nsamp <- ncol(PAC$Counts)
   x_graph <- n_features <- NULL
+  
+  if(allbut==TRUE){
+    if(!is.null(pheno_target)){
+    pheno_t<-(unique(PAC$Pheno[,pheno_target[[1]]]))
+    pheno_target[[2]] <- pheno_t[pheno_t != pheno_target[[2]]]
+    }
+    if(!is.null(anno_target)){
+    anno_t <-(unique(PAC$Anno[,anno_target[[1]]]))
+    anno_target[[2]]<-anno_t[anno_t != anno_target[[2]]]
+    }
+  }
   
   ### Subset samples by Pheno 
   if(!is.null(pheno_target)){
@@ -113,7 +135,7 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
     if(any(names(PAC)=="summary")){
       if(!any(sub_pheno)){
         warning(
-          "\nTable(s) were found in PAC$summary that may have been generated",
+          "\nTable(s) were found in PAC@summary that may have been generated",
           "\nwith samples that now are removed. Summary table names has ",
           "\ntherefore been marked.")
         names(PAC$summary) <- paste0(names(PAC$summary), 
@@ -184,11 +206,11 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
   }  
   
   ### Subset data by Size
-  if(!is.null(size)){
-    if(!length(size)==2)
+  if(!is.null(nucleotide_range)){
+    if(!length(nucleotide_range)==2)
       stop("\nYou must specify both min and max size.",
            "\nOnly one number was obtained.")
-    sub_size <- PAC$Anno$Size >= size[1] & PAC$Anno$Size <= size[2]
+    sub_size <- PAC$Anno$Size >= nucleotide_range[1] & PAC$Anno$Size <= nucleotide_range[2]
     if(any(names(PAC)=="norm")){
       PAC$norm <- lapply(as.list(PAC$norm), function(x){
         x[sub_size, , drop=FALSE]
@@ -204,9 +226,9 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
     tab_anno <- as.data.frame(table(sub_size))
     passed <- tab_anno[tab_anno[,1]==TRUE, 2]
     if(passed==0){
-      stop("Size filter resulted in 0 sequences.") 
+      stop("Nucleotide range filter resulted in 0 sequences.") 
     }else{
-      cat(paste0("\n-- Size filter will retain: ", 
+      cat(paste0("\n-- Nucleotide range filter will retain: ", 
                  passed, " of ", length(sub_size), " seqs."))
     }
   }
@@ -215,7 +237,7 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
     if(!norm %in% c(names(PAC$norm),"counts", "Counts")){
       stop("\nThe data specified in 'norm' was not avaiable in PAC.",
            "\nMake sure that name in 'norm' specifies a table name in",
-           "\nPAC$Counts or PAC$norm$...")
+           "\nPAC@Counts or PAC@norm$...")
     }
     if(norm %in% c("counts","Counts")){ 
       df <- PAC$Counts
@@ -322,7 +344,7 @@ PAC_filter <- function(PAC, size=NULL, threshold=0, coverage=0,
     }
   }
   ## Double check and return
-  options(opt_sci)
+  
   if(PAC_check(PAC)==TRUE){
     if(tp=="S4"){
        return(as.PAC(PAC))

@@ -2,25 +2,26 @@
 % Please edit documentation in R/PAC_filter.R
 \name{PAC_filter}
 \alias{PAC_filter}
-\title{Filter a PAC object on sequence size and covarage}
+\title{Filter a PAC object on sequence size and coverage}
 \usage{
 PAC_filter(
   PAC,
-  size = NULL,
+  nucleotide_range = NULL,
   threshold = 0,
   coverage = 0,
   norm = "counts",
   subset_only = FALSE,
   stat = FALSE,
   pheno_target = NULL,
-  anno_target = NULL
+  anno_target = NULL,
+  allbut = FALSE
 )
 }
 \arguments{
 \item{PAC}{PAC-list object containing an Anno data.frame with sequences as
-row names and a Counts table with raw counts or reads per million (cpm).}
+row names and a Counts table with raw counts or counts per million (cpm).}
 
-\item{size}{Integer vector giving the size interval, as c(min,max), that
+\item{nucleotide_range}{Integer vector giving the size interval, as c(min,max), that
 should be saved (default=c(min,max)).}
 
 \item{threshold}{Integer giving the threshold in counts or normalized counts
@@ -37,7 +38,7 @@ anno_target should be done. If subset=FALSE (default) both subsetting and
 other filtering will be done.}
 
 \item{stat}{(optional) Logical specifying if a coverage graph should be
-generated and if users should be promted prior to proceeding.
+generated and if users should be prompted prior to proceeding.
 (default=FALSE).}
 
 \item{pheno_target}{(optional) List with: 
@@ -51,11 +52,16 @@ the target Pheno column (1st object).
 object being a character vector of the target type/biotypes(s) in
 the target Anno column (1st object).
 (default=NULL)}
+
+\item{allbut}{(optional) TRUE or FALSE to give option to include
+all possible variables but the ones defined in pheno_target
+and anno_target. Useful when you wish to for example filter out
+one particular variable.}
 }
 \value{
 A list of objects: 
               PAC object with filtered data.   
-              (optional) A covarage plot
+              (optional) A coverage plot
 }
 \description{
 \code{PAC_filter} Filter PAC objects.
@@ -71,7 +77,7 @@ load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata",
 ###--------------------------------------------------------------------- 
 ## Extracts all sequences between 10-80 nt in length with at 
 ## least 5 counts in 20\% of all samples.
-pac_lowfilt <- PAC_filter(pac, size=c(10,80), threshold=5,
+pac_lowfilt <- PAC_filter(pac, nucleotide_range=c(10,80), threshold=5,
                          coverage=20, norm = "counts",
                          pheno_target=NULL, anno_target=NULL)
 
@@ -88,12 +94,18 @@ filtsep <- PAC_filtsep(pac, norm="counts", threshold=5,
 
 pac_filt <- PAC_filter(pac, subset_only = TRUE,
                      anno_target= unique(do.call("c", as.list(filtsep))))
+                     
+###--------------------------------------------------------------------- 
+## Extract all biotypes but tRNA in all samples but in sample fastq_1
+
+pac_filt <- PAC_filter(pac, anno_target=list("Biotypes_mis0","tRNA"),
+                     pheno_target=list("sample","fastq1"), allbut=TRUE)
 
 
 
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current
+\url{https://github.com/OestLab/seqpac} for updates on the current
   package.
 
 Other PAC analysis: 

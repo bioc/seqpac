@@ -7,7 +7,7 @@
 PAC_sizedist(
   PAC,
   norm = "counts",
-  range = NULL,
+  nucleotide_range = NULL,
   anno_target,
   pheno_target = NULL,
   summary_target = NULL,
@@ -25,7 +25,7 @@ analysis will be done on cpm values returned from \code{PAC_norm} function
 and stored in the norm folder of the PAC-list object. The name of any other
 table in the norm(PAC) folder can also be used.}
 
-\item{range}{Integer vector giving the range  in sequence lengths
+\item{nucleotide_range}{Integer vector giving the nucleotide_range  in sequence lengths
 (default=c(min, max)).}
 
 \item{anno_target}{List with: 
@@ -100,7 +100,7 @@ cowplot::plot_grid(plotlist=sizedist_plots[[1]], nrow = 3, ncol = 1)
 
 }
 \seealso{
-\url{https://github.com/Danis102} for updates on the current
+\url{https://github.com/OestLab/seqpac} for updates on the current
   package.
 
 Other PAC analysis: 

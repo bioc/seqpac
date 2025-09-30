@@ -10,7 +10,7 @@
 #'
 #'@family PAC generation
 #'
-#'@seealso \url{https://github.com/Danis102} for updates on the current package.
+#'@seealso \url{https://github.com/OestLab/seqpac} for updates on the current package.
 #'
 #'@param input Character indicating the path to a directory containing fastq
 #'  formatted sequence files either compressed (.fastq.gz) or text (.fastq).
@@ -32,7 +32,7 @@
 #'   
 #'   Options for each input are: \describe{
 #'    \item{\strong{type}=}{
-#'        '\emph{hard_trim}': Trims all upto the very last nucleotide.\cr
+#'        '\emph{hard_trim}': Trims all up to the very last nucleotide.\cr
 #'        '\emph{hard_rm}': Same as 'hard_trim' but removes untrimmed 
 #'        sequences.\cr
 #'        '\emph{hard_save}': Same as 'hard_trim' but saves all untrimmed 
@@ -56,7 +56,7 @@
 #'        }
 #'        
 #'    \item{\strong{mismatch}=}{
-#'        Numeric controling the percent mismatch. 
+#'        Numeric controlling the percent mismatch. 
 #'        For instance, if min=10 and
 #'        mismatch=0.1, then 1 mismatch is allowed in the minimum overlap.
 #'        }
@@ -74,7 +74,7 @@
 #'   'mismatch' that controls poly G trimming. This trimming might be necessary
 #'   for fastq files from two channel illumina sequencers (e.g. NextSeq and
 #'   NovaSeq) where no color signals are interpreted as 'G', but where read
-#'   failure sometimes also results in long stratches of 'no-signal-Gs'.
+#'   failure sometimes also results in long stretches of 'no-signal-Gs'.
 #'
 #'   Works similar to \code{adapt_3_set} but instead of an adaptor sequence a
 #'   poly 'G' string is constructed from the 'min' input option. Thus, if
@@ -82,10 +82,10 @@
 #'   'GGGGGGGGGGNNNNN...etc' with 10 percent mismatch will be removed from the
 #'   output fastq file.
 #'   
-#' @param concat Integer setting the threshold for trimming concatamere-like
+#' @param concat Integer setting the threshold for trimming concatemer-like
 #'   adaptors. Even when adaptor synthesis and ligation are strictly controlled,
-#'   concatamer-like ("di-") adaptor sequences are formed. When \code{concat} is
-#'   an integer, \code{make_trim} will search all trimmed sequnces for
+#'   concatemer-like ("di-") adaptor sequences are formed. When \code{concat} is
+#'   an integer, \code{make_trim} will search all trimmed sequences for
 #'   additional adaptor sequence using a shorter version of the provided adaptor
 #'   in \code{adapt_3}. The length of the short adaptor is controlled by
 #'   \code{adapt_3_set$min}. If an additional, shorter, adaptor sequence is
@@ -98,13 +98,13 @@
 #'   result in trimming of real nucleotides that just happend to share sequence
 #'   with the adaptor. As default \code{concat}=12, which have been carefully
 #'   evaluated in relation to the risk of trimming real sequence. If
-#'   \code{concat}=NULL, concatamer-like adaptor trimming will not be done.
+#'   \code{concat}=NULL, concatemer-like adaptor trimming will not be done.
 #'
-#' @param seq_range Numeric vector with two inputs named 'min' and 'max', that
+#' @param nucleotide_range Numeric vector with two inputs named 'min' and 'max', that
 #'   controls the sequence size filter. For example, if
-#'   \code{seq_range=c(min=15, max=50)} the function will extract sequences in
-#'   the range between 15-50 nucleotides after trimming. As defualt,
-#'   \code{seq_range=c(min=NULL, max=NULL)} and will retain all trimmed
+#'   \code{nucleotide_range=c(min=15, max=50)} the function will extract sequences in
+#'   the range between 15-50 nucleotides after trimming. As default,
+#'   \code{nucleotide_range=c(min=NULL, max=NULL)} and will retain all trimmed
 #'   sequences.
 #'
 #' @param quality Numeric vector with two inputs named 'threshold' and 'percent'
@@ -174,7 +174,7 @@
 #'        adapt_3_set=c(type="hard_rm", min=10, mismatch=0.1), 
 #'        adapt_3="AGATCGGAAGAGCACACGTCTGAACTCCAGTCACTA", 
 #'        polyG=c(type="hard_trim", min=20, mismatch=0.1),
-#'        seq_range=c(min=14, max=70),
+#'        nucleotide_range=c(min=14, max=70),
 #'        quality=c(threshold=20, percent=0.8))
 #'        
 #' list.files(path = output, pattern = "fastq") #after
@@ -194,13 +194,15 @@
 #' #      adapt_3_set=<options_for_main_trimming, 
 #' #      adapt_3=<sequence_to be trimmed, 
 #' #      polyG=<Illumina_Nextseq_type_poly_G_trimming>,
-#' #      seq_range=<what_sequence_range_to_save>,
+#' #      nucleotide_range=<what_sequence_range_to_save>,
 #' #      quality=<quality_filtering_options>))
 #' @export
 ### make_trim ###
 # This function applies getTrim over parallel fastq (foreach)
 # It also manage chunks by appending trimmed fastq in a while loop
 # Updates progress report for each progressive chunk across all fastq
+
+
 make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE, 
                            threads=1, chunk_size=NULL,
                            polyG=c(type=NULL, min=NULL, mismatch=NULL),
@@ -208,7 +210,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
                            adapt_3="AGATCGGAAGAGCACACGTCTGAACTCCAGTCACTA", 
                            adapt_5_set=c(type=NULL, min=NULL, mismatch=NULL), 
                            adapt_5=NULL, 
-                           seq_range=c(min=NULL, max=NULL),
+                           nucleotide_range=c(min=NULL, max=NULL),
                            quality=c(threshold=20, percent=0.8)){
 
   ##### General setup #######################################
@@ -216,7 +218,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
   
     nam_trim <- nam <- fls <- NULL
   
-    fls <- list.files(input, pattern ="fastq.gz\\>|\\.fastq\\>", 
+    fls <- list.files(input, pattern ="fastq.gz\\>|\\.fastq\\>|\\.fq.gz\\>", 
                       full.names=TRUE, recursive=TRUE, include.dirs = TRUE)
     if(length(fls) == 0){
     fls <- input
@@ -285,7 +287,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
       if(!is(logi_create, "try-error")){
         if(any(!logi_create)){
           warning("Was unable to create ", output, 
-                  "\nProbable reason: Permission denided")  
+                  "\nProbable reason: Permission denied")  
           
         }
       }
@@ -309,7 +311,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
   par_parse <- list(output=output, indels=indels, concat=concat, 
                     polyG=polyG, adapt_3_set=adapt_3_set, adapt_3=adapt_3,
                     adapt_5_set=adapt_5_set, adapt_5=adapt_5, quality=quality, 
-                    chunk_size=chunk_size, seq_range=seq_range)
+                    chunk_size=chunk_size, nucleotide_range=nucleotide_range)
   
   doParallel::registerDoParallel(threads)
   `%dopar%` <- foreach::`%dopar%`
@@ -398,7 +400,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
                 sum(prog_report$quality["removed"], 
                     prog_report_temp$quality["removed"])
             }
-            if(!is.null(seq_range)){ 
+            if(!is.null(nucleotide_range)){ 
               prog_report$size["removed"] <- 
                 sum(prog_report$size["removed"], 
                     prog_report_temp$size["removed"])
@@ -530,7 +532,7 @@ getTrim <- function(fstq, fstq_sav=NULL, in_fl=NULL, out_fl=NULL, par_parse){
   concat <- par_parse$concat
   quality <- par_parse$quality
   chunk_size <- par_parse$chunk_size
-  seq_range <- par_parse$seq_range
+  nucleotide_range <- par_parse$nucleotide_range
   polyG <- par_parse$polyG
   adapt_3_set <- par_parse$adapt_3_set
   adapt_3 <- par_parse$adapt_3
@@ -556,7 +558,7 @@ getTrim <- function(fstq, fstq_sav=NULL, in_fl=NULL, out_fl=NULL, par_parse){
   
   if(!length(unique(lgn)) == 1){
     warning("\nDiffering read lengths prior to adapter trimming.",
-            "\nHave you already performed 3-prim trimming?")
+            "\nHave you already performed 3'-trimming?")
   }
   
   #########################################################     
@@ -852,12 +854,12 @@ getTrim <- function(fstq, fstq_sav=NULL, in_fl=NULL, out_fl=NULL, par_parse){
   
   ########################
   ##### Size filter ######
-  if(!is.null(seq_range)){
-    logi_min <- Biostrings::width(fstq@sread) >= seq_range["min"]
-    logi_max <- Biostrings::width(fstq@sread) <= seq_range["max"]
+  if(!is.null(nucleotide_range)){
+    logi_min <- Biostrings::width(fstq@sread) >= nucleotide_range["min"]
+    logi_max <- Biostrings::width(fstq@sread) <= nucleotide_range["max"]
     sav_lst$size <- c(too_short=sum(!logi_min), 
                       too_long=sum(!logi_max), 
-                      seq_range)
+                      nucleotide_range)
     fstq <- fstq[logi_min+logi_max==2]
     rm(logi_min, logi_max)
     gc(reset=TRUE)
@@ -899,3 +901,4 @@ getTrim <- function(fstq, fstq_sav=NULL, in_fl=NULL, out_fl=NULL, par_parse){
   
   return(sav_lst)
 }
+
