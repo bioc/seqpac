@@ -18,7 +18,7 @@
 #'   group(s) in the target Pheno column (1st object).
 #' 
 #' @param norm Character indicating what type of data to be used. If 'counts',
-#'   the raw counts in Counts will be used (default). If "cpm", cpm values will 
+#'   the raw counts in Counts will be used (default). If "cpm", CPM values will 
 #'   be used. As of now, only "counts" and "cpm" may be used for this wrapper.
 #' 
 #' @param anno_target Character vector with the name of the target column in

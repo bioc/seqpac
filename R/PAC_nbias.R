@@ -76,7 +76,7 @@
 #'                           anno_target = list("Biotypes_mis0", "miRNA"))
 #' cowplot::plot_grid(plotlist=output_nbias$Histograms)
 #' 
-#' # Summarized over group cpm means
+#' # Summarized over group CPM means
 #' pac_test <- PAC_summary(pac, norm = "cpm", type = "means", 
 #'                         pheno_target=list("stage"), merge_pac=TRUE)
 #' output_nbias <- PAC_nbias(pac_test, summary_target = list("cpmMeans_stage") )

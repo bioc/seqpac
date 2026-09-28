@@ -50,10 +50,10 @@
 #' load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
 #'                   package = "seqpac", mustWork = TRUE))
 #' 
-#' # Simple sample counts pca and scatterplots with no groupings: 
+#' # Simple sample counts PCA and scatterplots with no groupings: 
 #' pca_cnt <- PAC_pca(pac, norm="counts")
 #' 
-#' # Sample cpm pca and scatterplots with color groupings from 
+#' # Sample CPM PCA and scatterplots with color groupings from 
 #' # pheno(PAC)$style column:    
 #' pca_cpm <- PAC_pca(pac, norm="cpm", style="pheno", 
 #'                    pheno_target=list("stage"))
@@ -65,12 +65,12 @@
 #'                         pheno_target=list("stage"), 
 #'                         labels=pheno(pac)$batch)
 #' 
-#' # Cpm pca with anno(PAC) sequence features instead of Pheno samples and 
+#' # CPM PCA with anno(PAC) sequence features instead of Pheno samples and 
 #' # restricted to read size 20-22:
 #' pca_cpm_anno <- PAC_pca(pac, norm="cpm", style="anno", 
 #'                         anno_target=list("Size", 20:22))
 #' 
-#' # Cpm pca as biplot:
+#' # CPM PCA as biplot:
 #' pca_cpm_bi <- PAC_pca(pac, norm="cpm", style="both", 
 #'                       pheno_target=list("stage"))
 #' 

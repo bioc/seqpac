@@ -5,9 +5,9 @@
 #'
 #' Given a PAC object, the destination of reference files, and information of
 #' what type of information to save, this function will perform mapping against references
-#' and retain information of mapping. This function is based of three main functions;
-#'  \code{map_reanno}, \code{make_reanno} and \code{add_reanno}, whom may be ran 
-#'  separately for more detailed control of the workflow. 
+#' and retain information of mapping. This function is based of four main functions;
+#'  \code{map_reanno}, \code{make_reanno}, \code{add_reanno}  and \code{simplify_reanno}, 
+#'  which can be run separately for more detailed control of the workflow. 
 #'  Using save_name=TRUE in this function will retain the name of the references where sequences are found,
 #'  which may cause large objects.   
 #'

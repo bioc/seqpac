@@ -234,7 +234,7 @@ workflow, as will be described below.
  
  # Preprocess PAC-object and creat means
  pac <- PAC_norm(pac)                        # Default normalization is cpm
- pac <- PAC_filter(pac, nucleotide_range=c(15,60))       # Here, filter on sequence length
+ pac <- PAC_filter(pac, nucleotide_range=c(16,75))       # Here, filter on sequence length
  pac <- PAC_summary(pac, norm = "cpm", type = "means", 
                     pheno_target=list("groups", unique(pheno(pac)$groups)))
  
@@ -551,8 +551,8 @@ each targeting object target different tables in the PAC object.
 Important, if the second object is set to NULL or is left out this will
 automatically target all samples in the specified column. If the anno_target is
 a character vector (not a list) some function will attempt to extract matches in
-the row names of either Pheno or Anno (see example with `PAC_filtsep` below).For
-more, please refer to the original Seqpac publication: Skog et al. 2021 (DOI: 10.1093/bioinformatics/btad144).
+the row names of either Pheno or Anno (see example with `PAC_filtsep` below). For
+more, please refer to the original Seqpac publication: Skog et al. 2021 (DOI: 10.1101/2021.03.19.436151).
 
 <br>
 
@@ -757,6 +757,8 @@ There are two primary modes, "genome" or "biotype", for mapping and the choice
 will reflect the output. Using "genome", a workflow anticipating information 
 such as genomic coordinates is applied. Using "biotype", the output is simpler, 
 using search terms matching the reference fasta name. 
+
+`PAC_map` combines the functions above into one workflow.
 
 For more information, see the section 'The reannotation workflow'.
 
@@ -1059,6 +1061,15 @@ hierarchies and observe the consequences of your choices in for example a pie
 chart.
 
 <br>
+
+**PAC_map**<br>
+`PAC_map` combines the functionality of `map_reanno`, `make_reanno` and `add_reanno` 
+and `simplify_reanno` into a single workflow. A preferred hierarchy can be supplied, 
+otherwise the function generates a hierarchy based on the biotypes identified in the data. 
+Additionally, sequences without a genome reference hit can be filtered.
+
+
+<br>
 In summary:
 
 - **map_reanno**       Bowtie reference mapping over mismatch cycles 
@@ -1066,6 +1077,7 @@ In summary:
 - **make_reanno**      Organizes `map_reanno` output into a reanno object
 - **add_reanno**       Classifies annotations according to reference name
 - **simplify_reanno**  Hierarchical classification
+- **PAC_map**          A wrapper function for sequence annotation
 
 
 <br>
