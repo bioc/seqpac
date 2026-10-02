@@ -142,7 +142,7 @@ reanno_biotype <- make_reanno(output, PAC=pac, mis_fasta_check = TRUE)
 # One search hit (regular expressions) gives one new short name 
 
 bio_search <- list(
-              rrna=c("5S", "5.8S", "12S", "16S", "18S", "28S", "pre_S45"),
+              rrna=c("5S", "5.8S", "12S", "16S", "18S", "28S", "pre_S45", "rRNA"),
               trna =c("_tRNA", "mt:tRNA"))
  
  
@@ -192,7 +192,7 @@ tab[tab$seq \%in\% other_seqs,]         #A few in rrna
 ## Add a search terms that catches the other rrna 
 bio_search <- list(
               rrna=c("5S", "5.8S", "12S", "16S", 
-                     "18S", "28S", "pre_S45", "Other"),
+                     "18S", "28S", "pre_S45","rRNA", "Other"),
               trna =c("_tRNA", "mt:tRNA"))
                 
 anno <- add_reanno(reanno_biotype, bio_search=bio_search, 
@@ -215,13 +215,14 @@ anno <- add_reanno(reanno_biotype, bio_search=bio_search,
  about Bowtie and \url{https://github.com/OestLab/seqpac} for updates on the
  current package.
 
-Other PAC reannotation: 
-\code{\link{PAC_annotate}()},
-\code{\link{as.reanno}()},
-\code{\link{import_reanno}()},
-\code{\link{make_conv}()},
-\code{\link{make_reanno}()},
-\code{\link{map_reanno}()},
-\code{\link{simplify_reanno}()}
+Other PAC reannotation:
+\code{\link[=PAC_annotate]{PAC_annotate()}},
+\code{\link[=PAC_map]{PAC_map()}},
+\code{\link[=as.reanno]{as.reanno()}},
+\code{\link[=import_reanno]{import_reanno()}},
+\code{\link[=make_conv]{make_conv()}},
+\code{\link[=make_reanno]{make_reanno()}},
+\code{\link[=map_reanno]{map_reanno()}},
+\code{\link[=simplify_reanno]{simplify_reanno()}}
 }
 \concept{PAC reannotation}
