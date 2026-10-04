@@ -271,7 +271,7 @@ If you wish to retain these, please rerun the function with filter_hit=FALSE!\n"
       tc <- as(tc, "list")
     }
     tc_df <- tc$Anno[,c("class", "decoder", "acceptor","type")]
-    mrg <- merge(x=PAC$Anno, y=tc_df, all.x=TRUE, all.y=FALSE, sort=F, by=0)
+    mrg <- merge(x=PAC$Anno, y=tc_df, all.x=TRUE, all.y=FALSE, sort=FALSE, by=0)
     mrg <- mrg[match(rownames(PAC$Anno),mrg$Row.names),]
     rownames(mrg) <- mrg$Row.names
     mrg <- mrg[,!names(mrg) %in% "Row.names"]
