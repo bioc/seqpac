@@ -1,6 +1,26 @@
 citHeader("To cite seqpac in publications use:")
 
 citEntry(entry = "Article",
+  title        = "Seqpac: a framework for sRNA-seq analysis in R using sequence-based counts",
+  author       = personList(as.person("Signe Skog"),
+                            as.person("Lovisa Orkenby"),
+			    as.person("Unn Kugelberg"),
+			    as.person("Anita Ost"),
+			    as.person("Daniel Natt")),
+  journal      = "Bioinformatics",
+  year         = "2023",
+  doi	       = "https://doi.org/10.1093/bioinformatics/btad144",
+  volume       = "_",
+  number       = "_",
+  pages        = "_",
+  textVersion  =
+  paste("Signe Skog, Lovisa Orkenby, Unn Kugelberg, Anita Ost, Daniel Natt (2023).",
+        "Seqpac: a framework for sRNA-seq analysis in R using sequence-based counts.",
+        "Bioinformatics",
+        "_")
+)
+
+citEntry(entry = "Article",
   title        = "Seqpac: A New Framework for small RNA analysis in R using Sequence-Based Counts",
   author       = personList(as.person("Signe Skog"),
                             as.person("Lovisa Orkenby"),

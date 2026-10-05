@@ -75,17 +75,45 @@ performed. This workflow may be performed by three functions as follows:
 
 ```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, results = "hide"}
 # #Loading example files
-#  sys_path = system.file("extdata", package = "seqpac", mustWork = TRUE)
-#  fastq <- list.files(path = sys_path, pattern = "fastq", all.files = FALSE, full.names = TRUE)
-#  ref_tRNA <- system.file("extdata/trna", "tRNA.fa", package = "seqpac", mustWork = TRUE)
-# if(!sum(stringr::str_count(list.files(dirname(ref_tRNA)), ".ebwt")) ==6){
-#   Rbowtie::bowtie_build(ref_tRNA, outdir=dirname(ref_tRNA), prefix="tRNA", force=TRUE)}
-# output_path <- paste0(tempdir(),"/seqpac/anno_example")
+# load in the test reference files and ensure correct Bowtie files are available
+
+# input = system.file("extdata", package = "seqpac", mustWork = TRUE)
 # 
-# # Running the workflow
-# pac <- PAC_create(input=fastq, trim="default_neb")
-# pac <- PAC_annotate(biotype=ref_tRNA, PAC=pac, output=output_path)
-# results <- PAC_analyze(PAC=pac)
+#  ## tRNA:
+#  trna_file <- system.file("extdata/trna", "tRNA.fa",
+#                           package = "seqpac", mustWork = TRUE)
+#  trna_dir <- dirname(trna_file)
+# 
+#  if(!sum(stringr::str_count(list.files(trna_dir), ".ebwt")) ==6){
+#    Rbowtie::bowtie_build(trna_file,
+#                          outdir=trna_dir,
+#                          prefix="tRNA", force=TRUE)
+#  }
+#  ## rRNA:
+#  rrna_file <- system.file("extdata/rrna", "rRNA.fa",
+#                           package = "seqpac", mustWork = TRUE)
+#  rrna_dir <- dirname(rrna_file)
+# 
+#  if(!sum(stringr::str_count(list.files(rrna_dir), ".ebwt")) ==6){
+#    Rbowtie::bowtie_build(rrna_file,
+#                          outdir=rrna_dir,
+#                          prefix="rRNA", force=TRUE)
+#  }
+# 
+#  input_biotype <- list(trna= trna_file, rrna= rrna_file)
+# 
+#  ## "Genome" (here we reuse the rRNA reference just as an example):
+#  input_genome <- list(genome=rrna_file)
+# 
+# 
+#  #Manually making a pheno for this example
+#  pheno <- data.frame(row.names=(c("seqpac_fq1", "seqpac_fq2",
+#                                   "seqpac_fq3", "seqpac_fq4", "seqpac_fq5", "seqpac_fq6")),
+#                      stage=rep(c("Stage1", "Stage3"), each=3))
+# 
+#  Seqpac(input=input, input_genome=input_genome, input_biotype=input_biotype,
+#         pheno_target = list("stage"), anno_target=list("Biotypes"),
+#         pheno=pheno, norm="cpm", filter_hit=FALSE, override=TRUE)
 
 ```
 
@@ -206,7 +234,7 @@ workflow, as will be described below.
  
  # Preprocess PAC-object and creat means
  pac <- PAC_norm(pac)                        # Default normalization is cpm
- pac <- PAC_filter(pac, nucleotide_range=c(15,60))       # Here, filter on sequence length
+ pac <- PAC_filter(pac, nucleotide_range=c(16,75))       # Here, filter on sequence length
  pac <- PAC_summary(pac, norm = "cpm", type = "means", 
                     pheno_target=list("groups", unique(pheno(pac)$groups)))
  
@@ -523,8 +551,8 @@ each targeting object target different tables in the PAC object.
 Important, if the second object is set to NULL or is left out this will
 automatically target all samples in the specified column. If the anno_target is
 a character vector (not a list) some function will attempt to extract matches in
-the row names of either Pheno or Anno (see example with `PAC_filtsep` below).For
-more, please refer to the original Seqpac publication: Skog et al. 2021 (DOI: 10.1093/bioinformatics/btad144).
+the row names of either Pheno or Anno (see example with `PAC_filtsep` below). For
+more, please refer to the original Seqpac publication: Skog et al. 2021 (DOI: 10.1101/2021.03.19.436151).
 
 <br>
 
@@ -729,6 +757,8 @@ There are two primary modes, "genome" or "biotype", for mapping and the choice
 will reflect the output. Using "genome", a workflow anticipating information 
 such as genomic coordinates is applied. Using "biotype", the output is simpler, 
 using search terms matching the reference fasta name. 
+
+`PAC_map` combines the functions above into one workflow.
 
 For more information, see the section 'The reannotation workflow'.
 
@@ -1031,6 +1061,15 @@ hierarchies and observe the consequences of your choices in for example a pie
 chart.
 
 <br>
+
+**PAC_map**<br>
+`PAC_map` combines the functionality of `map_reanno`, `make_reanno` and `add_reanno` 
+and `simplify_reanno` into a single workflow. A preferred hierarchy can be supplied, 
+otherwise the function generates a hierarchy based on the biotypes identified in the data. 
+Additionally, sequences without a genome reference hit can be filtered.
+
+
+<br>
 In summary:
 
 - **map_reanno**       Bowtie reference mapping over mismatch cycles 
@@ -1038,6 +1077,7 @@ In summary:
 - **make_reanno**      Organizes `map_reanno` output into a reanno object
 - **add_reanno**       Classifies annotations according to reference name
 - **simplify_reanno**  Hierarchical classification
+- **PAC_map**          A wrapper function for sequence annotation
 
 
 <br>
@@ -1081,9 +1121,17 @@ ref_paths <- list(myco="<some/path/to/your/genome.fa>")
 # For testing, you can use a small mycoplasma genome provided with Seqpac
 # But remember to provide single genomes as a named list anyway.
 # The name will be used to keep track of your genome.
+#Here, we will also create the bowtie files needed
 myco_path <- system.file("extdata/mycoplasma_genome", "mycoplasma.fa", 
                          package = "seqpac", mustWork = TRUE)
 ref_paths <- list(myco=myco_path)
+mycoplasma_dir<- gsub("mycoplasma.fa", "", myco_path)
+
+ if(!sum(stringr::str_count(list.files(mycoplasma_dir), ".ebwt")) ==6){
+      Rbowtie::bowtie_build(myco_path, 
+                            outdir=mycoplasma_dir, 
+                            prefix="mycoplasma", force=TRUE)
+                            }
 
 #Run map_reanno
 map_reanno(PAC=pac, input=ref_paths, output=outpath_genome,
@@ -1470,6 +1518,11 @@ load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata",
 ## Differential expression in Seqpac 
 
 # Simple model testing stages against using Wald test with local fit (default)
+
+library(seqpac)
+library(BiocParallel)
+library(DESeq2)
+
 table(pheno(pac)$stage)
 output_deseq <- PAC_deseq(pac, model= ~stage, threads=1)
 ```

@@ -219,7 +219,7 @@ simplify_reanno <- function(input, hierarchy, mismatches=2,
   
   ### Report the results:   
   anno_vect_uni <- unique(do.call("c", strsplit(anno_vect, ";|\\|")))
-  cat(paste0("\nBiotypes will be asigned as follows:\n"))
+  cat(paste0("\nBiotypes will be assigned as follows:\n"))
   catg <- do.call("rbind", lapply(hierarchy, function(x){
     paste(anno_vect_uni[grepl(x, anno_vect_uni)], collapse=", ")}))
   colnames(catg) <- "Original_biotypes"
@@ -246,7 +246,7 @@ simplify_reanno <- function(input, hierarchy, mismatches=2,
     unlist(strsplit(paste0(search_terms, collapse=", "), ", "))))){
     stop(
       "\nAborted! Search terms overlap multiple biotype categories.",
-      "\nPlease double check the asignments.")
+      "\nPlease double check the assignments.")
     }  
   search_terms <- gsub(", ", "|", search_terms) 
   for(i in seq.int(length(search_terms))){

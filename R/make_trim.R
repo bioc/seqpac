@@ -317,7 +317,7 @@ make_trim <- function(input, output, indels=TRUE, concat=12, check_mem=FALSE,
   `%dopar%` <- foreach::`%dopar%`
   
   prog_report <- foreach::foreach(
-    i=seq_along(fls), .inorder = TRUE, .export= c("nam_trim", "nam"),
+    i=seq_along(fls), .inorder = TRUE, .export= c("nam_trim", "nam", "getTrim"),
     .final = function(x){names(x) <- basename(fls); return(x)}) %dopar% {
       
       ##### Make a while loop that works for both full size fastq and chunks ###

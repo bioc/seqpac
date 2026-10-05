@@ -50,10 +50,10 @@
 #' load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
 #'                   package = "seqpac", mustWork = TRUE))
 #' 
-#' # Simple sample counts pca and scatterplots with no groupings: 
+#' # Simple sample counts PCA and scatterplots with no groupings: 
 #' pca_cnt <- PAC_pca(pac, norm="counts")
 #' 
-#' # Sample cpm pca and scatterplots with color groupings from 
+#' # Sample CPM PCA and scatterplots with color groupings from 
 #' # pheno(PAC)$style column:    
 #' pca_cpm <- PAC_pca(pac, norm="cpm", style="pheno", 
 #'                    pheno_target=list("stage"))
@@ -65,12 +65,12 @@
 #'                         pheno_target=list("stage"), 
 #'                         labels=pheno(pac)$batch)
 #' 
-#' # Cpm pca with anno(PAC) sequence features instead of Pheno samples and 
+#' # CPM PCA with anno(PAC) sequence features instead of Pheno samples and 
 #' # restricted to read size 20-22:
 #' pca_cpm_anno <- PAC_pca(pac, norm="cpm", style="anno", 
 #'                         anno_target=list("Size", 20:22))
 #' 
-#' # Cpm pca as biplot:
+#' # CPM PCA as biplot:
 #' pca_cpm_bi <- PAC_pca(pac, norm="cpm", style="both", 
 #'                       pheno_target=list("stage"))
 #' 
@@ -82,8 +82,8 @@
 #' # Extract pca output
 #' pca_cpm_anno$pca
 #' 
-#' @importFrom ggplot2 geom_hline geom_vline geom_point aes 
-#' theme scale_colour_gradient theme_minimal xlab ylab
+#' @importFrom ggplot2 geom_hline geom_vline geom_point aes theme scale_colour_gradient theme_minimal xlab ylab
+#' 
 #' @export
 
 PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE, 
@@ -178,8 +178,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
         coord<- as.data.frame(pca_res$ind$coord)
         con<- as.data.frame(pca_res$eig[,"percentage of variance"])
         grphs$PC1_PC2 <- ggplot2::ggplot() +
-          geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-          geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+          geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+          geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
           geom_point(data=coord, aes(x=Dim.1, y=Dim.2, colour=col)) + 
           theme(legend.position="none") +
           scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -188,8 +188,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
           ylab(paste0("PC2 (", round(con["comp 2",], digits=2), "%)"))
 
         grphs$PC1_PC3 <- ggplot2::ggplot() +
-          geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-          geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+          geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+          geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
           geom_point(data=coord, aes(x=Dim.1, y=Dim.3, colour=col)) + 
           theme(legend.position="none") +
           scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -198,8 +198,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
           ylab(paste0("PC3 (", round(con["comp 3",], digits=2), "%)"))
 
         grphs$PC2_PC3 <- ggplot2::ggplot() +
-          geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-          geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+          geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+          geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
           geom_point(data=coord, aes(x=Dim.2, y=Dim.3, colour=col)) + 
           theme(legend.position="none") +
           scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -216,13 +216,13 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
       
       grphs$PC1_PC2 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Pheno"))))
+        utils::modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Pheno"))))
       grphs$PC1_PC3 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Pheno"))))
+        utils::modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Pheno"))))
       grphs$PC2_PC3 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Pheno"))))
+        utils::modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Pheno"))))
       }
     }
   
@@ -232,8 +232,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
       coord<- as.data.frame(pca_res$var$coord)
       con<- as.data.frame(pca_res$eig[,"percentage of variance"])
       grphs$PC1_PC2 <- ggplot2::ggplot() +
-        geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-        geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+        geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+        geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
         geom_point(data=coord, aes(x=Dim.1, y=Dim.2, colour=col)) + 
         theme(legend.position="none") +
         scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -242,8 +242,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
         ylab(paste0("PC2 (", round(con["comp 2",], digits=2), "%)")) 
 
       grphs$PC1_PC3 <- ggplot2::ggplot() +
-        geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-        geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+        geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+        geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
         geom_point(data=coord, aes(x=Dim.1, y=Dim.3, colour=col)) + 
         theme(legend.position="none") +
         scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -252,8 +252,8 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
         ylab(paste0("PC3 (", round(con["comp 3",], digits=2), "%)")) 
 
       grphs$PC2_PC3 <- ggplot2::ggplot() +
-        geom_hline(yintercept=0, linetype="dashed", color="black", size=0.5)+
-        geom_vline(xintercept=0, linetype="dashed", color="black", size=0.5)+
+        geom_hline(yintercept=0, linetype="dashed", color="black", linewidth=0.5)+
+        geom_vline(xintercept=0, linetype="dashed", color="black", linewidth=0.5)+
         geom_point(data=coord, aes(x=Dim.2, y=Dim.3, colour=col)) + 
         theme(legend.position="none") +
         scale_colour_gradient(low="#00FFE6", high="#FF0000") +
@@ -269,13 +269,13 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
       
       grphs$PC1_PC2 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Anno"))))
+        utils::modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Anno"))))
       grphs$PC1_PC3 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Anno"))))
+        utils::modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Anno"))))
       grphs$PC2_PC3 <- do.call(
         factoextra::fviz_pca_ind,
-        modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Anno"))))
+        utils::modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Anno"))))
     }
   } 
   if(style=="both"){
@@ -287,13 +287,13 @@ PAC_pca <- function(PAC, norm="counts", style="pheno", graphs=TRUE,
     
     grphs$PC1_PC2 <- do.call(
       factoextra::fviz_pca_ind,
-      modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Biplot"))))
+      utils::modifyList(base_args, c(list(axes = c(1, 2), title = "PC1_PC2 - Biplot"))))
     grphs$PC1_PC3 <- do.call(
       factoextra::fviz_pca_ind,
-      modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Biplot"))))
+      utils::modifyList(base_args, c(list(axes = c(1, 3), title = "PC1_PC3 - Biplot"))))
     grphs$PC2_PC3 <- do.call(
       factoextra::fviz_pca_ind,
-      modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Biplot"))))
+      utils::modifyList(base_args, c(list(axes = c(2, 3), title = "PC2_PC3 - Biplot"))))
   }
   print(cowplot::plot_grid(plotlist=grphs, ncol=2, nrow=2))
   return(list(graphs=grphs, pca=pca_res))
