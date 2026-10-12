@@ -519,7 +519,7 @@ load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata",
 
 pheno(pac)[,1:5]
 anno(pac)[1:5,1:5]
-counts(pac)[1:5,1:5]
+pac@Counts[1:5,1:5]
 
 ## This PAC is an S4 object, but you can easily turn it to an S3 list with as().
 ## using as.PAC() will turn it back into S4:
@@ -1406,21 +1406,20 @@ where the model can be specified using the model argument.
 For more details on models for differential expression analysis, 
 please refer to the DESeq2 vignette.
 
-```{r, eval=TRUE, results=FALSE, message=FALSE, warning=FALSE, error=FALSE}
-
-load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
-                 package = "seqpac", mustWork = TRUE))
+```{r, eval=TRUE, results=FALSE, message=FALSE, warning=FALSE, error=FALSE, fig.keep='none'}
+# load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
+#                  package = "seqpac", mustWork = TRUE))
 
 ###---------------------------------------------------------------------
 ## Examples on how to use PAC_analyze
 
-#Defining the model
-result_list <- PAC_analyze(pac, 
-                           pheno_target=list("stage"), #here you can define which groups you would like to compare, 
-                           #e.g. pheno_target=list("stage", c("Stage1", "Stage3")),
-                           norm="cpm", 
-                           anno_target=list("Biotypes_mis0"), 
-                           model= ~stage + batch) #the model can be adjusted here, you also have the option to not include it
+# This code works, but may cause bugs in the vignette creation and is currently coded out due to that!
+# result_list <- PAC_analyze(pac, 
+#                            pheno_target=list("stage"), #here you can define which groups you would like to compare, 
+#                            #e.g. pheno_target=list("stage", c("Stage1", "Stage3")),
+#                            norm="cpm", 
+#                            anno_target=list("Biotypes_mis0"), 
+#                            model= ~stage + batch) #the model can be adjusted here, you also have the option to not include it
 
 
 ``` 
