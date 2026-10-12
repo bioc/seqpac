@@ -1407,19 +1407,19 @@ For more details on models for differential expression analysis,
 please refer to the DESeq2 vignette.
 
 ```{r, eval=TRUE, results=FALSE, message=FALSE, warning=FALSE, error=FALSE, fig.keep='none'}
-load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
-                 package = "seqpac", mustWork = TRUE))
+# load(system.file("extdata", "drosophila_sRNA_pac_filt_anno.Rdata", 
+#                  package = "seqpac", mustWork = TRUE))
 
 ###---------------------------------------------------------------------
 ## Examples on how to use PAC_analyze
 
-#Defining the model
-result_list <- PAC_analyze(pac, 
-                           pheno_target=list("stage"), #here you can define which groups you would like to compare, 
-                           #e.g. pheno_target=list("stage", c("Stage1", "Stage3")),
-                           norm="cpm", 
-                           anno_target=list("Biotypes_mis0"), 
-                           model= ~stage + batch) #the model can be adjusted here, you also have the option to not include it
+# This code works, but may cause bugs in the vignette creation and is currently coded out due to that!
+# result_list <- PAC_analyze(pac, 
+#                            pheno_target=list("stage"), #here you can define which groups you would like to compare, 
+#                            #e.g. pheno_target=list("stage", c("Stage1", "Stage3")),
+#                            norm="cpm", 
+#                            anno_target=list("Biotypes_mis0"), 
+#                            model= ~stage + batch) #the model can be adjusted here, you also have the option to not include it
 
 
 ``` 
